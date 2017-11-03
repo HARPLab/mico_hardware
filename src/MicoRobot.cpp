@@ -111,11 +111,11 @@ MicoRobot::MicoRobot(ros::NodeHandle nh)
         ROS_ERROR("Could not set angular control: Error code %d",r);
     }
     
-    /*ROS_INFO("Attempting to set force control mode...");
-    r = StartForceControl();
-    if (r != NO_ERROR_KINOVA) {
-        ROS_ERROR("Could not start force control: Error code %d",r);
-    }*/
+//    ROS_INFO("Attempting to set force control mode...");
+//    r = StartForceControl();
+//    if (r != NO_ERROR_KINOVA) {
+//        ROS_ERROR("Could not start force control: Error code %d",r);
+//    }
     
     // get soft limits from rosparams
     if (nh.hasParam("soft_limits/eff"))
@@ -332,6 +332,12 @@ void MicoRobot::checkForStall(void)
         {
             all_in_limits = false;
             ROS_WARN("Exceeded soft effort limits on joint %d. Limit=%f, Measured=%f", i, soft_limits[i], eff[i]);
+            int r = NO_ERROR_KINOVA;
+            r = StartForceControl();
+            if (r != NO_ERROR_KINOVA) {
+                ROS_ERROR("Could not start force control: Error code %d",r);
+            }
+            eff_stall = true;
             /*
             if (!eff_stall)
             {
@@ -347,6 +353,11 @@ void MicoRobot::checkForStall(void)
     {
         eff_stall = false;
         ROS_INFO("Exiting force_control mode.");
+        int r = NO_ERROR_KINOVA;
+        r = StopForceControl();
+        if (r != NO_ERROR_KINOVA) {
+            ROS_ERROR("Could not stop force controll: Error code %d", r);
+        }
         //arm->stop_force_ctrl();
         //arm->set_control_ang();
         sendVelocityCommand(zero_velocity_command);
