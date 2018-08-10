@@ -48,6 +48,7 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(mico_hardware src/main.cpp src/MicoRobot.cpp)
+add_executable(jaco_hardware src/main.cpp src/JacoRobot.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -61,6 +62,11 @@ set(KINOVA_ARM_LIBS
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(mico_hardware
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+   ${KINOVA_ARM_LIBS}
+ )
+ target_link_libraries(jaco_hardware
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
    ${KINOVA_ARM_LIBS}
